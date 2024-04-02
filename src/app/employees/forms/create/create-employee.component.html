@@ -1,0 +1,88 @@
+<modal-classic title="Create employee" (close)="closeModal()">
+  <ng-container modalBody>
+    <form [formGroup]="newEmployeeForm" class="grid grid-cols-2 gap-6">
+      <div>
+        <form-label label="First Name" />
+
+        <input
+          formControlName="first_name"
+          type="text"
+          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          placeholder="First Name"
+        />
+      </div>
+      <div>
+        <form-label label="Last Name" />
+
+        <input
+          formControlName="last_name"
+          type="text"
+          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          placeholder="Last Name"
+        />
+      </div>
+
+      <div>
+        <form-label label="Email" />
+        <input
+          formControlName="email"
+          type="email"
+          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          placeholder="example@email.com"
+        />
+      </div>
+      <div>
+        <form-label label="Position" />
+        <select
+          formControlName="position_id"
+          class="py-3 px-4 bg-white border pe-9 cursor-pointer block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+        >
+          <option selected hidden>Select position</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select>
+      </div>
+      <div>
+        <form-label label="Department" />
+        <select
+          formControlName="department_id"
+          class="py-3 px-4 bg-white border pe-9 cursor-pointer block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+        >
+          <option selected hidden>Select department</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select>
+      </div>
+      <div>
+        <form-label label="Hire Date" />
+        <input
+          formControlName="hire_date"
+          id="hire-date"
+          type="date"
+          class="py-3 px-4 border block cursor-pointer w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          placeholder="example@email.com"
+        />
+      </div>
+    </form>
+  </ng-container>
+  <ng-container modalActions>
+    <button
+      (click)="closeModal()"
+      type="button"
+      class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      data-hs-overlay="#hs-vertically-centered-modal"
+    >
+      Cancel
+    </button>
+    <button
+      (click)="createEmployee()"
+      [disabled]="newEmployeeForm.invalid"
+      type="button"
+      class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+    >
+      Create Employee
+    </button>
+  </ng-container>
+</modal-classic>
