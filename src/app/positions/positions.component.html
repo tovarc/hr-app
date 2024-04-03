@@ -1,26 +1,26 @@
-@if (newEmployeeModalIsOpen()) {
-  <create-employee-modal
-    (close)="closeNewEmployeeModal()"
-    (success)="getEmployees(); closeNewEmployeeModal()"
+@if (newPositionModalIsOpen()) {
+  <create-position-modal
+    (close)="closeNewPositionModal()"
+    (success)="getPositions(); closeNewPositionModal()"
   />
 }
 
-@if (updateEmployeeModalIsOpen()) {
-  <update-employee-modal
-    [employee]="selectedEmployee"
-    (close)="closeUpdateEmployeeModal()"
-    (success)="getEmployees(); closeUpdateEmployeeModal()"
+@if (updatePositionModalIsOpen()) {
+  <update-position-modal
+    [position]="selectedPosition"
+    (close)="closeUpdatePositionModal()"
+    (success)="getPositions(); closeUpdatePositionModal()"
   />
 }
 
 <div class="flex items-center justify-between mb-4">
-  <h3 class="text-lg">Employees</h3>
+  <h3 class="text-lg">Positions</h3>
   <button
-    (click)="openNewEmployeeModal()"
+    (click)="openNewPositionModal()"
     type="button"
     class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
   >
-    New Employee
+    New Position
   </button>
 </div>
 <div class="flex flex-col">
@@ -40,26 +40,21 @@
                 scope="col"
                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
               >
-                Email
+                Responsibilities
               </th>
               <th
                 scope="col"
                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
               >
-                Position
+                Min Salary
               </th>
               <th
                 scope="col"
                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
               >
-                Department
+                Max Salary
               </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
-              >
-                Hire Date
-              </th>
+
               <th
                 scope="col"
                 class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
@@ -69,40 +64,35 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            @for (employee of employees$ | async; track employee) {
+            @for (position of positions$ | async; track position) {
               <tr>
                 <td
                   class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
                 >
-                  {{ employee.first_name }}
-                  {{ employee.last_name }}
+                  {{ position.name }}
                 </td>
                 <td
                   class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
                 >
-                  {{ employee.email }}
+                  {{ position.responsibilities }}
                 </td>
                 <td
                   class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
                 >
-                  {{ employee.position.name }}
+                  {{ position.min_salary | currency }}
                 </td>
 
                 <td
                   class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
                 >
-                  {{ employee.department.name }}
+                  {{ position.max_salary | currency }}
                 </td>
-                <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
-                >
-                  {{ employee.hire_date | date }}
-                </td>
+
                 <td
                   class="px-6 py-4 flex items-center justify-end whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
                 >
                   <span
-                    (click)="openUpdateEmployeeModal(employee)"
+                    (click)="openUpdatePositionModal(position)"
                     class="mr-4 cursor-pointer"
                   >
                     <svg
@@ -120,20 +110,20 @@
                       />
                     </svg>
                   </span>
-                  <span (click)="deleteEmployee(employee)">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      class="w-6 h-6 stroke-red-400 fill-none cursor-pointer"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                      />
-                    </svg>
-                  </span>
+                  <!-- <span (click)="deletePosition(position)"> -->
+                  <!--   <svg -->
+                  <!--     xmlns="http://www.w3.org/2000/svg" -->
+                  <!--     viewBox="0 0 24 24" -->
+                  <!--     stroke-width="1.5" -->
+                  <!--     class="w-6 h-6 stroke-red-400 fill-none cursor-pointer" -->
+                  <!--   > -->
+                  <!--     <path -->
+                  <!--       stroke-linecap="round" -->
+                  <!--       stroke-linejoin="round" -->
+                  <!--       d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" -->
+                  <!--     /> -->
+                  <!--   </svg> -->
+                  <!-- </span> -->
                 </td>
               </tr>
             }

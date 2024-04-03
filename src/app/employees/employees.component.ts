@@ -34,7 +34,7 @@ export class EmployeesComponent implements OnInit {
   public newEmployeeModalIsOpen: WritableSignal<boolean> = signal(false);
   public updateEmployeeModalIsOpen: WritableSignal<boolean> = signal(false);
 
-  public employees$!: Observable<IEmployee[]>;
+  public employees$!: Observable<any[]>;
 
   ngOnInit(): void {
     this.getEmployees();
