@@ -1,67 +1,60 @@
-<modal-classic title="Update employee" (close)="closeModal()">
+<modal-classic title="Update Leave Request" (close)="closeModal()">
   <ng-container modalBody>
-    <form [formGroup]="updateEmployeeForm" class="grid grid-cols-2 gap-6">
+    <form [formGroup]="updateLeaveRequestForm" class="grid grid-cols-2 gap-6">
       <div>
-        <form-label label="First Name" />
-
-        <input
-          formControlName="first_name"
-          type="text"
-          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-          placeholder="First Name"
-        />
-      </div>
-      <div>
-        <form-label label="Last Name" />
-
-        <input
-          formControlName="last_name"
-          type="text"
-          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-          placeholder="Last Name"
-        />
-      </div>
-
-      <div>
-        <form-label label="Email" />
-        <input
-          formControlName="email"
-          type="email"
-          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-          placeholder="example@email.com"
-        />
-      </div>
-      <div>
-        <form-label label="Position" />
+        <form-label label="Employee" />
         <select
-          formControlName="position_id"
+          formControlName="employee_id"
           class="py-3 px-4 bg-white border pe-9 cursor-pointer block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
         >
-          @for (position of positions$ | async; track position) {
-            <option [value]="position.id">{{ position.name }}</option>
+          <option value="0" selected hidden>Select Employee</option>
+          @for (employee of employees$ | async; track employee) {
+            <option [value]="employee.id">
+              {{ employee.first_name }} {{ employee.last_name }}
+            </option>
           }
         </select>
       </div>
       <div>
-        <form-label label="Department" />
-        <select
-          formControlName="department_id"
-          class="py-3 px-4 bg-white border pe-9 cursor-pointer block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-        >
-          @for (department of departments$ | async; track department) {
-            <option [value]="department.id">{{ department.name }}</option>
-          }
-        </select>
+        <form-label label="Start Date" />
+
+        <input
+          formControlName="start_date"
+          type="datetime-local"
+          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+        />
+      </div>
+
+      <div>
+        <form-label label="End Date" />
+
+        <input
+          formControlName="end_date"
+          type="datetime-local"
+          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+        />
+      </div>
+
+      <div>
+        <form-label label="Reason" />
+        <input
+          formControlName="reason"
+          type="text"
+          class="py-3 px-4 border block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          placeholder="What is the reason of leave?"
+        />
       </div>
       <div>
-        <form-label label="Hire Date" />
-        <input
-          formControlName="hire_date"
-          id="hire-date"
-          type="date"
-          class="py-3 px-4 border block cursor-pointer w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-          placeholder="example@email.com"
-        />
+        <form-label label="Status" />
+        <select
+          formControlName="status_id"
+          class="py-3 px-4 bg-white border pe-9 cursor-pointer block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+        >
+          <option value="0" selected hidden>Select Status</option>
+          @for (status of leaveRequestsStatus$ | async; track status) {
+            <option [value]="status.id">{{ status.name }}</option>
+          }
+        </select>
       </div>
     </form>
   </ng-container>
@@ -75,12 +68,12 @@
       Cancel
     </button>
     <button
-      (click)="updateEmployee()"
-      [disabled]="updateEmployeeForm.invalid"
+      (click)="updateLeaveRequest()"
+      [disabled]="updateLeaveRequestForm.invalid"
       type="button"
       class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
     >
-      Update Employee
+      Update Leave Request
     </button>
   </ng-container>
 </modal-classic>

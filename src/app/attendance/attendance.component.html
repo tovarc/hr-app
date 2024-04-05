@@ -1,0 +1,151 @@
+@if (newLeaveRequestModalIsOpen()) {
+  <create-attendance-modal
+    (close)="closeNewLeaveRequestModal()"
+    (success)="getAttendances(); closeNewLeaveRequestModal()"
+  />
+}
+
+@if (updateLeaveRequestModalIsOpen()) {
+  <update-leave-request-modal
+    [leaveRequest]="selectedLeaveRequest"
+    (close)="closeUpdateLeaveRequestModal()"
+    (success)="getAttendances(); closeUpdateLeaveRequestModal()"
+  />
+}
+
+<div class="flex items-center justify-between mb-4">
+  <h3 class="text-lg">Attendance</h3>
+  <button
+    (click)="openNewLeaveRequestModal()"
+    type="button"
+    class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+  >
+    New Attendance
+  </button>
+</div>
+<div class="flex flex-col">
+  <div class="-m-1.5 overflow-x-auto">
+    <div class="p-1.5 min-w-full inline-block align-middle">
+      <div class="border rounded-lg overflow-hidden dark:border-gray-700">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th
+                scope="col"
+                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
+              >
+                Employee
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
+              >
+                Time In
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
+              >
+                Time Out
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-gray-400"
+              >
+                Status
+              </th>
+              <!-- <th -->
+              <!--   scope="col" -->
+              <!--   class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-gray-400" -->
+              <!-- > -->
+              <!--   Action -->
+              <!-- </th> -->
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            @for (attendance of attendances$ | async; track attendance) {
+              <tr>
+                <td
+                  class="capitalize px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+                >
+                  {{ attendance.employee.first_name }}
+                  {{ attendance.employee.last_name }}
+                </td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
+                >
+                  {{ attendance.date | date }}
+                </td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
+                >
+                  {{ attendance.time_in }}
+                </td>
+
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
+                >
+                  {{ attendance.time_out }}
+                </td>
+                <td
+                  class="px-6 py-4 text-end whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"
+                >
+                  <div>
+                    <span
+                      class="py-1 px-3 inline-flex items-center gap-x-1 text-xs font-medium rounded-full dark:bg-teal-500/10 dark:text-teal-500"
+                      [ngClass]="{
+                        'bg-yellow-100': attendance.status.id === 2,
+                        'text-yellow-800': attendance.status.id === 2,
+                        'bg-teal-100': attendance.status.id === 1,
+                        'text-teal-800': attendance.status.id === 1,
+                        'bg-red-100': attendance.status.id === 3,
+                        'text-red-800': attendance.status.id === 3
+                      }"
+                    >
+                      {{ attendance.status.name }}
+                    </span>
+                  </div>
+                </td>
+                <!-- <td -->
+                <!--   class="px-6 py-4 flex items-center justify-end whitespace-nowrap text-sm text-gray-800 dark:text-gray-200" -->
+                <!-- > -->
+                <!--   <span -->
+                <!--     (click)="openUpdateLeaveRequestModal(attendance)" -->
+                <!--     class="mr-4 cursor-pointer" -->
+                <!--   > -->
+                <!--     <svg -->
+                <!--       xmlns="http://www.w3.org/2000/svg" -->
+                <!--       fill="none" -->
+                <!--       viewBox="0 0 24 24" -->
+                <!--       stroke-width="1.5" -->
+                <!--       stroke="currentColor" -->
+                <!--       class="w-6 h-6" -->
+                <!--     > -->
+                <!--       <path -->
+                <!--         stroke-linecap="round" -->
+                <!--         stroke-linejoin="round" -->
+                <!--         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" -->
+                <!--       /> -->
+                <!--     </svg> -->
+                <!--   </span> -->
+                <!-- </td> -->
+              </tr>
+            } @empty {
+              <tr class="text-center">
+                <td colspan="6" class="py-6">
+                  <span>No results</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

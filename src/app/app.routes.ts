@@ -18,8 +18,22 @@ export const routes: Routes = [
   {
     path: 'departments',
     loadComponent: () =>
-      import('./deparments/departments.component').then(
+      import('./departments/departments.component').then(
         (mod) => mod.DepartmentsComponent,
+      ),
+  },
+  {
+    path: 'leave-requests',
+    loadComponent: () =>
+      import('./leave-requests/leave-requests.component').then(
+        (mod) => mod.LeaveRequestsComponent,
+      ),
+  },
+  {
+    path: 'attendance',
+    loadComponent: () =>
+      import('./attendance/attendance.component').then(
+        (mod) => mod.AttendanceComponent,
       ),
   },
 ];

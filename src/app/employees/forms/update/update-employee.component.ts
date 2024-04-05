@@ -18,6 +18,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { DepartmentsApiService } from '../../../api/departments.service';
+import { PositionsApiService } from '../../../api/positions.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'update-employee-modal',
@@ -34,6 +37,11 @@ import {
 })
 export class UpdateEmployeeModalComponent implements OnInit {
   private employeesApiService = inject(EmployeesApiService);
+  private departmentsApiService = inject(DepartmentsApiService);
+  private positionsApiService = inject(PositionsApiService);
+
+  public departments$!: Observable<any>;
+  public positions$!: Observable<any>;
 
   @Input() employee: any;
   @Output() close = new EventEmitter();
@@ -48,7 +56,17 @@ export class UpdateEmployeeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.updateEmployeeForm.patchValue({ ...this.employee });
+    this.departments$ = this.departmentsApiService.getAllDepartments();
+    this.positions$ = this.positionsApiService.getAllPositions();
+
+    console.log(this.employee);
+
+    this.updateEmployeeForm.patchValue({
+      ...this.employee,
+      hire_date: this.employee.hire_date.split('T')[0],
+      position_id: this.employee.position.id,
+      department_id: this.employee.department.id,
+    });
   }
 
   public updateEmployeeForm = new FormGroup({
