@@ -3,8 +3,6 @@ import { HttpInterceptorFn } from '@angular/common/http';
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const token = sessionStorage.getItem('token');
 
-  console.log(req.url);
-
   const isLogin = req.url.includes('auth/login');
 
   if (isLogin) next(req);

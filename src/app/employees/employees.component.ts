@@ -34,14 +34,18 @@ export class EmployeesComponent implements OnInit {
   public newEmployeeModalIsOpen: WritableSignal<boolean> = signal(false);
   public updateEmployeeModalIsOpen: WritableSignal<boolean> = signal(false);
 
-  public employees$!: Observable<any[]>;
+  public employees!: any[];
+  public employeesCopy!: any[];
 
   ngOnInit(): void {
     this.getEmployees();
   }
 
   public getEmployees() {
-    this.employees$ = this.employeesApiService.getAllEmployees();
+    this.employeesApiService.getAllEmployees().subscribe({
+      next: (employees: any) =>
+        (this.employees = this.employeesCopy = employees),
+    });
   }
 
   public openNewEmployeeModal(): void {
@@ -67,5 +71,14 @@ export class EmployeesComponent implements OnInit {
     this.employeesApiService.deleteEmployee(employee).subscribe({
       complete: () => this.getEmployees(),
     });
+  }
+
+  public searchEmployee(criteria: string): void {
+    this.employees = this.employeesCopy.filter(
+      (employee: any) =>
+        employee.first_name.toLowerCase().includes(criteria.toLowerCase()) ||
+        employee.last_name.toLowerCase().includes(criteria.toLowerCase()) ||
+        employee.email.toLowerCase().includes(criteria.toLowerCase()),
+    );
   }
 }

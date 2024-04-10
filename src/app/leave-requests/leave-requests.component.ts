@@ -8,11 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
 import { UIModalClassicComponent } from '../ui/modals/modal-classic.component';
 import { CreateLeaveRequestModalComponent } from './forms/create/create-leave-request.component';
 import { LeaveRequestsApiService } from '../api/leave-requests.service';
 import { UpdateLeaveRequestModalComponent } from './forms/update/update-leave-request.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'leave-requests',
@@ -24,6 +24,7 @@ import { UpdateLeaveRequestModalComponent } from './forms/update/update-leave-re
     UIModalClassicComponent,
     CreateLeaveRequestModalComponent,
     UpdateLeaveRequestModalComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './leave-requests.component.html',
 })
@@ -33,14 +34,45 @@ export class LeaveRequestsComponent implements OnInit {
   public newLeaveRequestModalIsOpen: WritableSignal<boolean> = signal(false);
   public updateLeaveRequestModalIsOpen: WritableSignal<boolean> = signal(false);
 
-  public leaveRequests$!: Observable<any[]>;
+  public leaveRequests!: any[];
+  public leaveRequestsCopy!: any[];
 
   ngOnInit(): void {
     this.getLeaveRequests();
+
+    this.filterLeaveRequestsForm.valueChanges.subscribe({
+      next: (values) => {
+        const { employee, status, date } = values;
+
+        this.leaveRequests = this.leaveRequestsCopy.filter((request: any) => {
+          if (
+            employee &&
+            !request.employee.first_name
+              .toLowerCase()
+              .includes(employee.toLowerCase())
+          ) {
+            return false;
+          }
+
+          if (+status && request.status.id !== +status) {
+            return false;
+          }
+
+          if (date && request.start_date.split('T')[0] !== date) {
+            return false;
+          }
+
+          return true;
+        });
+      },
+    });
   }
 
   public getLeaveRequests() {
-    this.leaveRequests$ = this.leaveRequestsApiService.getAllLeaveRequests();
+    this.leaveRequestsApiService.getAllLeaveRequests().subscribe({
+      next: (leaveRequests: any) =>
+        (this.leaveRequests = this.leaveRequestsCopy = leaveRequests),
+    });
   }
 
   public openNewLeaveRequestModal(): void {
@@ -60,5 +92,29 @@ export class LeaveRequestsComponent implements OnInit {
 
   public closeUpdateLeaveRequestModal(): void {
     this.updateLeaveRequestModalIsOpen.set(false);
+  }
+
+  public filterLeaveRequestsForm: FormGroup = new FormGroup({
+    employee: new FormControl(''),
+    status: new FormControl('null'),
+    date: new FormControl(''),
+  });
+
+  public filterLeaveRequests(criteria: string): void {
+    this.leaveRequests = this.leaveRequestsCopy.filter(
+      (leaveRequest: any) =>
+        leaveRequest.employee.first_name
+          .toLowerCase()
+          .includes(criteria.toLowerCase()) ||
+        leaveRequest.employee.last_name
+          .toLowerCase()
+          .includes(criteria.toLowerCase()),
+    );
+  }
+
+  public filterByStatus(event: any): void {
+    this.leaveRequests = this.leaveRequestsCopy.filter(
+      (leaveRequest: any) => leaveRequest.status.id == event.target.value,
+    );
   }
 }
