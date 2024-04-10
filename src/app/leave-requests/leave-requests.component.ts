@@ -37,6 +37,12 @@ export class LeaveRequestsComponent implements OnInit {
   public leaveRequests!: any[];
   public leaveRequestsCopy!: any[];
 
+  public filterLeaveRequestsForm: FormGroup = new FormGroup({
+    employee: new FormControl(''),
+    status: new FormControl('null'),
+    date: new FormControl(''),
+  });
+
   ngOnInit(): void {
     this.getLeaveRequests();
 
@@ -92,29 +98,5 @@ export class LeaveRequestsComponent implements OnInit {
 
   public closeUpdateLeaveRequestModal(): void {
     this.updateLeaveRequestModalIsOpen.set(false);
-  }
-
-  public filterLeaveRequestsForm: FormGroup = new FormGroup({
-    employee: new FormControl(''),
-    status: new FormControl('null'),
-    date: new FormControl(''),
-  });
-
-  public filterLeaveRequests(criteria: string): void {
-    this.leaveRequests = this.leaveRequestsCopy.filter(
-      (leaveRequest: any) =>
-        leaveRequest.employee.first_name
-          .toLowerCase()
-          .includes(criteria.toLowerCase()) ||
-        leaveRequest.employee.last_name
-          .toLowerCase()
-          .includes(criteria.toLowerCase()),
-    );
-  }
-
-  public filterByStatus(event: any): void {
-    this.leaveRequests = this.leaveRequestsCopy.filter(
-      (leaveRequest: any) => leaveRequest.status.id == event.target.value,
-    );
   }
 }

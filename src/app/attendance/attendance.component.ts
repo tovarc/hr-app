@@ -8,11 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
-import { UIModalClassicComponent } from '../ui/modals/modal-classic.component';
 import { UpdateLeaveRequestModalComponent } from './forms/update/update-leave-request.component';
 import { AttendancesApiService } from '../api/attendance.service';
 import { CreateAttendanceModalComponent } from './forms/create/create-attendance.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UIModalClassicComponent } from '../ui/modals/modal-classic.component';
 
 @Component({
   selector: 'leave-requests',
@@ -24,6 +24,7 @@ import { CreateAttendanceModalComponent } from './forms/create/create-attendance
     UIModalClassicComponent,
     CreateAttendanceModalComponent,
     UpdateLeaveRequestModalComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './attendance.component.html',
 })
@@ -33,14 +34,51 @@ export class AttendanceComponent implements OnInit {
   public newLeaveRequestModalIsOpen: WritableSignal<boolean> = signal(false);
   public updateLeaveRequestModalIsOpen: WritableSignal<boolean> = signal(false);
 
-  public attendances$!: Observable<any[]>;
+  public attendances!: any[];
+  public attendancesCopy!: any[];
+
+  public filterAttendancesForm: FormGroup = new FormGroup({
+    employee: new FormControl(''),
+    status: new FormControl('null'),
+    date: new FormControl(''),
+  });
 
   ngOnInit(): void {
     this.getAttendances();
+
+    this.filterAttendancesForm.valueChanges.subscribe({
+      next: (values) => {
+        const { employee, status, date } = values;
+
+        this.attendances = this.attendancesCopy.filter((request: any) => {
+          if (
+            employee &&
+            !request.employee.first_name
+              .toLowerCase()
+              .includes(employee.toLowerCase())
+          ) {
+            return false;
+          }
+
+          if (+status && request.status.id !== +status) {
+            return false;
+          }
+
+          if (date && request.start_date.split('T')[0] !== date) {
+            return false;
+          }
+
+          return true;
+        });
+      },
+    });
   }
 
   public getAttendances() {
-    this.attendances$ = this.attendancesApiService.getAllAttendances();
+    this.attendancesApiService.getAllAttendances().subscribe({
+      next: (attendances: any) =>
+        (this.attendances = this.attendancesCopy = attendances),
+    });
   }
 
   public openNewLeaveRequestModal(): void {
