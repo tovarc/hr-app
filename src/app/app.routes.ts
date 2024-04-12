@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './auth.guard';
+import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -21,6 +21,11 @@ export const routes: Routes = [
         (mod) => mod.DashboardComponent,
       ),
     children: [
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./users/users.component').then((mod) => mod.UsersComponent),
+      },
       {
         path: 'employees',
         loadComponent: () =>

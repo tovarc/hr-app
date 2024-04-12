@@ -5,19 +5,11 @@
   />
 }
 
-@if (updateLeaveRequestModalIsOpen()) {
-  <update-leave-request-modal
-    [leaveRequest]="selectedLeaveRequest"
-    (close)="closeUpdateLeaveRequestModal()"
-    (success)="getAttendances(); closeUpdateLeaveRequestModal()"
-  />
-}
-
 <div class="flex items-center justify-between mb-4">
   <div class="flex items-center">
     <h3 class="text-lg mr-6">Attendance</h3>
     <form [formGroup]="filterAttendancesForm" class="flex items-center">
-      <div class="max-w-lg w-[425px] mr-4">
+      <div *roles="['admin']" class="max-w-lg w-[425px] mr-4">
         <div class="relative">
           <div
             class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"

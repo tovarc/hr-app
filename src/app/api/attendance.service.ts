@@ -13,9 +13,23 @@ export class AttendancesApiService {
     return this.http.get<any>(`${environment.api}/attendances`);
   }
 
+  public getAllCurrentEmployeeAttendances(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.api}/attendances/current-employee`,
+    );
+  }
+
   public createAttendance(attendance: any): Observable<any> {
     return this.http.post<any>(`${environment.api}/attendances`, attendance);
   }
+
+  public createAttendanceByEmployee(attendance: any): Observable<any> {
+    return this.http.post<any>(
+      `${environment.api}/attendances/employee`,
+      attendance,
+    );
+  }
+
   //
   // public updateAttendance(attendance: any): Observable<any> {
   //   return this.http.patch<any>(`${environment.api}/attendance`, attendance);

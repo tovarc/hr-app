@@ -31,9 +31,13 @@ export class LoginComponent {
     const user = this.loginForm.value;
 
     this.authApiService.login(user).subscribe({
-      next: (response: any) => {
-        sessionStorage.setItem('token', response);
-        this.router.navigateByUrl('/dashboard/employees');
+      next: (user: any) => {
+        sessionStorage.setItem('token', user.token);
+        if (user.role == 'admin') {
+          this.router.navigateByUrl('/dashboard/employees');
+        } else {
+          this.router.navigateByUrl('/dashboard/attendance');
+        }
       },
       error: () => this.loginErrorMessage.set('Invalid email or password.'),
     });

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -8,4 +8,6 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   imports: [CommonModule, RouterOutlet, RouterModule],
   templateUrl: './app.component.html',
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  ngOnInit(): void {}
+}

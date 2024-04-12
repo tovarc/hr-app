@@ -1,7 +1,7 @@
 <modal-classic title="Create Leave Request" (close)="closeModal()">
   <ng-container modalBody>
     <form [formGroup]="newLeaveRequest" class="grid grid-cols-2 gap-6">
-      <div>
+      <div *roles="['admin']">
         <form-label label="Employee" />
         <select
           formControlName="employee_id"
@@ -44,7 +44,7 @@
           placeholder="What is the reason of leave?"
         />
       </div>
-      <div>
+      <div *roles="['admin']">
         <form-label label="Status" />
         <select
           formControlName="status_id"

@@ -11,9 +11,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LeaveRequestsStatusApiService } from '../../../api/leave-requests-status.service';
 import { LeaveRequestsApiService } from '../../../api/leave-requests.service';
+import { UserService } from '../../../shared/services/user.service';
+import { RoleDirective } from '../../../shared/directives/role.directive';
 
 @Component({
   selector: 'create-leave-request-modal',
@@ -25,10 +27,12 @@ import { LeaveRequestsApiService } from '../../../api/leave-requests.service';
     ReactiveFormsModule,
     UIFormLabelComponent,
     UIModalClassicComponent,
+    RoleDirective,
   ],
   templateUrl: './create-leave-request.component.html',
 })
 export class CreateLeaveRequestModalComponent implements OnInit {
+  private userService = inject(UserService);
   private employeesApiService = inject(EmployeesApiService);
   private leaveRequestsStatusApiService = inject(LeaveRequestsStatusApiService);
   private leaveRequestsApiService = inject(LeaveRequestsApiService);
@@ -42,7 +46,17 @@ export class CreateLeaveRequestModalComponent implements OnInit {
   ngOnInit(): void {
     this.leaveRequestsStatus$ =
       this.leaveRequestsStatusApiService.getAllLeaveRequestsStatus();
-    this.employees$ = this.employeesApiService.getAllEmployees();
+
+    if (this.userService.loggedUserRole() == 'admin') {
+      this.employees$ = this.employeesApiService.getAllEmployees();
+    }
+
+    if (this.userService.loggedUserRole() != 'admin') {
+      this.newLeaveRequest.patchValue({
+        employee_id: this.userService.loggedUser().employee.id,
+        status_id: 1,
+      });
+    }
   }
 
   public closeModal(): void {
@@ -85,12 +99,24 @@ export class CreateLeaveRequestModalComponent implements OnInit {
       ...this.newLeaveRequest.value,
     };
 
-    this.leaveRequestsApiService.createLeaveRequest(leaveRequest).subscribe({
-      next: (response) => {
-        if (response) {
-          this.closeOnSuccess();
-        }
-      },
-    });
+    if (this.userService.loggedUserRole() == 'admin') {
+      this.leaveRequestsApiService.createLeaveRequest(leaveRequest).subscribe({
+        next: (response) => {
+          if (response) {
+            this.closeOnSuccess();
+          }
+        },
+      });
+    } else {
+      this.leaveRequestsApiService
+        .createLeaveRequestByEmployee(leaveRequest)
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.closeOnSuccess();
+            }
+          },
+        });
+    }
   }
 }

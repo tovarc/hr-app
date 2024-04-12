@@ -11,9 +11,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AttendanceStatusApiService } from '../../../api/attendance-status.service';
 import { AttendancesApiService } from '../../../api/attendance.service';
+import { UserService } from '../../../shared/services/user.service';
+import { RoleDirective } from '../../../shared/directives/role.directive';
 
 @Component({
   selector: 'create-attendance-modal',
@@ -25,6 +27,7 @@ import { AttendancesApiService } from '../../../api/attendance.service';
     ReactiveFormsModule,
     UIFormLabelComponent,
     UIModalClassicComponent,
+    RoleDirective,
   ],
   templateUrl: './create-attendance.component.html',
 })
@@ -32,9 +35,10 @@ export class CreateAttendanceModalComponent implements OnInit {
   private employeesApiService = inject(EmployeesApiService);
   private attendanceStatusApiService = inject(AttendanceStatusApiService);
   private attendanceApiService = inject(AttendancesApiService);
+  private userService = inject(UserService);
 
   public attendanceStatus$!: Observable<any>;
-  public employees$!: Observable<any>;
+  public employees$!: Observable<any[]>;
 
   @Output() close = new EventEmitter();
   @Output() success = new EventEmitter();
@@ -42,7 +46,16 @@ export class CreateAttendanceModalComponent implements OnInit {
   ngOnInit(): void {
     this.attendanceStatus$ =
       this.attendanceStatusApiService.getAllAttendanceStatus();
-    this.employees$ = this.employeesApiService.getAllEmployees();
+
+    if (this.userService.loggedUserRole() == 'admin') {
+      this.employees$ = this.employeesApiService.getAllEmployees();
+    }
+
+    if (this.userService.loggedUserRole() == 'employee') {
+      this.newAttendanceForm.patchValue({
+        employee_id: this.userService.loggedUser().employee.id,
+      });
+    }
   }
 
   public closeModal(): void {
@@ -85,12 +98,24 @@ export class CreateAttendanceModalComponent implements OnInit {
       ...this.newAttendanceForm.value,
     };
 
-    this.attendanceApiService.createAttendance(attendance).subscribe({
-      next: (response) => {
-        if (response) {
-          this.closeOnSuccess();
-        }
-      },
-    });
+    if (this.userService.loggedUserRole() == 'admin') {
+      this.attendanceApiService.createAttendance(attendance).subscribe({
+        next: (response) => {
+          if (response) {
+            this.closeOnSuccess();
+          }
+        },
+      });
+    } else {
+      this.attendanceApiService
+        .createAttendanceByEmployee(attendance)
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.closeOnSuccess();
+            }
+          },
+        });
+    }
   }
 }

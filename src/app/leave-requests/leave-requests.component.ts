@@ -13,6 +13,8 @@ import { CreateLeaveRequestModalComponent } from './forms/create/create-leave-re
 import { LeaveRequestsApiService } from '../api/leave-requests.service';
 import { UpdateLeaveRequestModalComponent } from './forms/update/update-leave-request.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { RoleDirective } from '../shared/directives/role.directive';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'leave-requests',
@@ -25,10 +27,12 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
     CreateLeaveRequestModalComponent,
     UpdateLeaveRequestModalComponent,
     ReactiveFormsModule,
+    RoleDirective,
   ],
   templateUrl: './leave-requests.component.html',
 })
 export class LeaveRequestsComponent implements OnInit {
+  private userService = inject(UserService);
   private leaveRequestsApiService = inject(LeaveRequestsApiService);
 
   public newLeaveRequestModalIsOpen: WritableSignal<boolean> = signal(false);
@@ -75,10 +79,17 @@ export class LeaveRequestsComponent implements OnInit {
   }
 
   public getLeaveRequests() {
-    this.leaveRequestsApiService.getAllLeaveRequests().subscribe({
-      next: (leaveRequests: any) =>
-        (this.leaveRequests = this.leaveRequestsCopy = leaveRequests),
-    });
+    if (this.userService.loggedUserRole() !== 'admin') {
+      this.leaveRequestsApiService.getLeaveRequestsByEmployee().subscribe({
+        next: (leaveRequests: any) =>
+          (this.leaveRequests = this.leaveRequestsCopy = leaveRequests),
+      });
+    } else {
+      this.leaveRequestsApiService.getAllLeaveRequests().subscribe({
+        next: (leaveRequests: any) =>
+          (this.leaveRequests = this.leaveRequestsCopy = leaveRequests),
+      });
+    }
   }
 
   public openNewLeaveRequestModal(): void {

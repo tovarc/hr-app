@@ -12,11 +12,31 @@
     <div
       class="flex flex-row items-center gap-5 mt-5 sm:justify-end sm:mt-0 sm:ps-5"
     >
-      <a
-        class="font-medium text-gray-600 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-        href="#"
-        >Account</a
+      <span
+        class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400"
+        >{{ loggedUser.role.name }}</span
       >
+
+      <span
+        >{{ loggedUser.employee?.first_name }}
+        {{ loggedUser.employee?.last_name }}</span
+      >
+      <button (click)="logout()" class="cursor-pointer">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+          />
+        </svg>
+      </button>
     </div>
   </nav>
 </header>
@@ -27,9 +47,37 @@
     class="h-screen w-16 bg-white border-e border-gray-200 lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="flex flex-col justify-center items-center gap-y-2 py-4">
-      <div class="hs-tooltip inline-block [--placement:right]">
+      <div
+        *roles="['admin']"
+        class="hs-tooltip inline-block [--placement:right]"
+      >
         <a
           routerLink="employees"
+          class="w-[2.375rem] h-[2.375rem] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          routerLinkActive="bg-gray-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
+            />
+          </svg>
+        </a>
+      </div>
+      <div
+        *roles="['admin']"
+        class="hs-tooltip inline-block [--placement:right]"
+      >
+        <a
+          routerLink="users"
           class="w-[2.375rem] h-[2.375rem] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
           routerLinkActive="bg-gray-100"
         >
@@ -50,7 +98,10 @@
         </a>
       </div>
 
-      <div class="hs-tooltip inline-block [--placement:right]">
+      <div
+        *roles="['admin']"
+        class="hs-tooltip inline-block [--placement:right]"
+      >
         <a
           routerLink="departments"
           class="w-[2.375rem] h-[2.375rem] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
@@ -73,7 +124,10 @@
         </a>
       </div>
 
-      <div class="hs-tooltip inline-block [--placement:right]">
+      <div
+        *roles="['admin']"
+        class="hs-tooltip inline-block [--placement:right]"
+      >
         <a
           routerLink="positions"
           class="w-[2.375rem] h-[2.375rem] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
@@ -96,7 +150,10 @@
         </a>
       </div>
 
-      <div class="hs-tooltip inline-block [--placement:right]">
+      <div
+        *roles="['admin', 'employee']"
+        class="hs-tooltip inline-block [--placement:right]"
+      >
         <a
           routerLink="leave-requests"
           class="w-[2.375rem] h-[2.375rem] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
@@ -118,7 +175,10 @@
           </svg>
         </a>
       </div>
-      <div class="hs-tooltip inline-block [--placement:right]">
+      <div
+        *roles="['admin', 'employee']"
+        class="hs-tooltip inline-block [--placement:right]"
+      >
         <a
           routerLink="attendance"
           class="w-[2.375rem] h-[2.375rem] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"

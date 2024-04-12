@@ -13,9 +13,22 @@ export class LeaveRequestsApiService {
     return this.http.get<any>(`${environment.api}/leave-requests`);
   }
 
+  public getLeaveRequestsByEmployee(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.api}/leave-requests/current-employee`,
+    );
+  }
+
   public createLeaveRequest(leaveRequest: any): Observable<any> {
     return this.http.post<any>(
       `${environment.api}/leave-requests`,
+      leaveRequest,
+    );
+  }
+
+  public createLeaveRequestByEmployee(leaveRequest: any): Observable<any> {
+    return this.http.post<any>(
+      `${environment.api}/leave-requests/employee`,
       leaveRequest,
     );
   }

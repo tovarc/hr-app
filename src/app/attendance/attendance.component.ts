@@ -8,14 +8,15 @@ import {
   signal,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UpdateLeaveRequestModalComponent } from './forms/update/update-leave-request.component';
 import { AttendancesApiService } from '../api/attendance.service';
 import { CreateAttendanceModalComponent } from './forms/create/create-attendance.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UIModalClassicComponent } from '../ui/modals/modal-classic.component';
+import { RoleDirective } from '../shared/directives/role.directive';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
-  selector: 'leave-requests',
+  selector: 'attendance',
   standalone: true,
   imports: [
     CommonModule,
@@ -23,12 +24,13 @@ import { UIModalClassicComponent } from '../ui/modals/modal-classic.component';
     HttpClientModule,
     UIModalClassicComponent,
     CreateAttendanceModalComponent,
-    UpdateLeaveRequestModalComponent,
     ReactiveFormsModule,
+    RoleDirective,
   ],
   templateUrl: './attendance.component.html',
 })
 export class AttendanceComponent implements OnInit {
+  private userService = inject(UserService);
   private attendancesApiService = inject(AttendancesApiService);
 
   public newLeaveRequestModalIsOpen: WritableSignal<boolean> = signal(false);
@@ -64,7 +66,7 @@ export class AttendanceComponent implements OnInit {
             return false;
           }
 
-          if (date && request.start_date.split('T')[0] !== date) {
+          if (date && request.date.split('T')[0] !== date) {
             return false;
           }
 
@@ -75,10 +77,17 @@ export class AttendanceComponent implements OnInit {
   }
 
   public getAttendances() {
-    this.attendancesApiService.getAllAttendances().subscribe({
-      next: (attendances: any) =>
-        (this.attendances = this.attendancesCopy = attendances),
-    });
+    if (this.userService.loggedUserRole() !== 'admin') {
+      this.attendancesApiService.getAllCurrentEmployeeAttendances().subscribe({
+        next: (attendances: any) =>
+          (this.attendances = this.attendancesCopy = attendances),
+      });
+    } else {
+      this.attendancesApiService.getAllAttendances().subscribe({
+        next: (attendances: any) =>
+          (this.attendances = this.attendancesCopy = attendances),
+      });
+    }
   }
 
   public openNewLeaveRequestModal(): void {
