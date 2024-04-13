@@ -13,18 +13,7 @@ export class UsersApiService {
     return this.http.get<any>(`${environment.api}/users`);
   }
 
-  // public createAttendanceStatus(attendanceStatus: any): Observable<any> {
-  //   return this.http.post<any>(
-  //     `${environment.api}/attendance-status`,
-  //     attendanceStatus,
-  //   );
-  // }
-
   public updateUser(user: any): Observable<any> {
     return this.http.patch<any>(`${environment.api}/users`, user);
   }
-
-  // public deletePosition(position: any): Observable<any> {
-  //   return this.http.delete(`${environment.api}/positions/${position.id}`);
-  // }
 }

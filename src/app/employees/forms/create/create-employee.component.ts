@@ -14,6 +14,8 @@ import {
 import { Observable } from 'rxjs';
 import { DepartmentsApiService } from '../../../api/departments.service';
 import { PositionsApiService } from '../../../api/positions.service';
+import { AuthApiService } from '../../../api/auth.service';
+import { RolesApiService } from '../../../api/roles.service';
 
 @Component({
   selector: 'create-employee-modal',
@@ -32,9 +34,12 @@ export class CreateEmployeeModalComponent implements OnInit {
   private employeesApiService = inject(EmployeesApiService);
   private departmentsApiService = inject(DepartmentsApiService);
   private positionsApiService = inject(PositionsApiService);
+  private authApiService = inject(AuthApiService);
+  private rolesApiService = inject(RolesApiService);
 
   public departments$!: Observable<any>;
   public positions$!: Observable<any>;
+  public roles$!: Observable<any>;
 
   @Output() close = new EventEmitter();
   @Output() success = new EventEmitter();
@@ -42,6 +47,7 @@ export class CreateEmployeeModalComponent implements OnInit {
   ngOnInit(): void {
     this.departments$ = this.departmentsApiService.getAllDepartments();
     this.positions$ = this.positionsApiService.getAllPositions();
+    this.roles$ = this.rolesApiService.getAllRoles();
   }
 
   public closeModal(): void {
@@ -65,6 +71,10 @@ export class CreateEmployeeModalComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
     position_id: new FormControl(0, {
       nonNullable: true,
       validators: [Validators.min(1)],
@@ -73,6 +83,11 @@ export class CreateEmployeeModalComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.min(1)],
     }),
+    role_id: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.min(1)],
+    }),
+
     hire_date: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
@@ -82,15 +97,20 @@ export class CreateEmployeeModalComponent implements OnInit {
   public createEmployee(): void {
     const employee = this.newEmployeeForm.value;
 
-    console.log(employee);
-    const formattedEmployee = {
-      ...this.newEmployeeForm.value,
-    };
-
-    this.employeesApiService.createEmployee(formattedEmployee).subscribe({
-      next: (response) => {
-        if (response) {
-          this.closeOnSuccess();
+    this.employeesApiService.createEmployee(employee).subscribe({
+      next: (employeeResponse) => {
+        if (employeeResponse) {
+          this.authApiService
+            .register({
+              ...employee,
+              employee_id: employeeResponse.id,
+            })
+            .subscribe({
+              next: (response) => {
+                console.log(response);
+                this.closeOnSuccess();
+              },
+            });
         }
       },
     });

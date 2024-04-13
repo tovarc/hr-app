@@ -8,7 +8,6 @@ import {
   signal,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
 import { EmployeesApiService } from '../api/employees.service';
 import { UIModalClassicComponent } from '../ui/modals/modal-classic.component';
 import { CreateEmployeeModalComponent } from './forms/create/create-employee.component';
