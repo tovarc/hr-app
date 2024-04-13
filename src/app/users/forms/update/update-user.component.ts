@@ -61,6 +61,7 @@ export class UpdateUserModalComponent implements OnInit {
 
     this.updateUserForm.patchValue({
       ...this.user,
+      password: '',
     });
   }
 
@@ -77,6 +78,7 @@ export class UpdateUserModalComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required],
     }),
+    password: new FormControl(''),
     role_id: new FormControl(0, {
       nonNullable: true,
       validators: [Validators.min(1)],
